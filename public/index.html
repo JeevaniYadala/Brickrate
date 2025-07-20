@@ -1,131 +1,357 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>BrickRate - Construction Estimator</title>
-  <style>
-    body {
-      font-family: 'Segoe UI', sans-serif;
-      margin: 0;
-      padding: 0;
-      background: #f4f4f4;
-      color: #333;
-    }
-    header {
-      background: #3b82f6;
-      color: white;
-      padding: 1rem;
-      text-align: center;
-    }
-    .container {
-      max-width: 600px;
-      margin: 2rem auto;
-      background: white;
-      padding: 2rem;
-      border-radius: 8px;
-      box-shadow: 0 0 10px rgba(0,0,0,0.1);
-    }
-    label {
-      display: block;
-      margin: 1rem 0 0.5rem;
-    }
-    input, select, button {
-      width: 100%;
-      padding: 0.7rem;
-      margin-bottom: 1rem;
-      border: 1px solid #ccc;
-      border-radius: 5px;
-    }
-    button {
-      background-color: #3b82f6;
-      color: white;
-      border: none;
-      cursor: pointer;
-    }
-    button:hover {
-      background-color: #2563eb;
-    }
-    .result {
-      background: #ecfdf5;
-      border: 1px solid #34d399;
-      padding: 1rem;
-      border-radius: 5px;
-    }
-  </style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>BrickRate - Construction Cost Estimator</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+            overflow: hidden;
+        }
+
+        .header {
+            background: linear-gradient(135deg, #ff6b6b, #ee5a24);
+            color: white;
+            padding: 30px;
+            text-align: center;
+        }
+
+        .header h1 {
+            font-size: 2.5rem;
+            margin-bottom: 10px;
+            font-weight: 700;
+        }
+
+        .header p {
+            font-size: 1.1rem;
+            opacity: 0.9;
+        }
+
+        .form-container {
+            padding: 40px;
+        }
+
+        .form-group {
+            margin-bottom: 25px;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+            color: #333;
+            font-size: 1rem;
+        }
+
+        input, select {
+            width: 100%;
+            padding: 15px;
+            border: 2px solid #e1e8ed;
+            border-radius: 10px;
+            font-size: 1rem;
+            transition: all 0.3s ease;
+            background: #f8f9fa;
+        }
+
+        input:focus, select:focus {
+            outline: none;
+            border-color: #667eea;
+            background: white;
+            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+        }
+
+        .dimension-group {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+        }
+
+        .calculate-btn {
+            width: 100%;
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: white;
+            border: none;
+            padding: 18px;
+            border-radius: 10px;
+            font-size: 1.1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            margin-top: 20px;
+        }
+
+        .calculate-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 20px rgba(102, 126, 234, 0.3);
+        }
+
+        .result {
+            margin-top: 30px;
+            padding: 25px;
+            background: linear-gradient(135deg, #a8edea, #fed6e3);
+            border-radius: 15px;
+            text-align: center;
+            display: none;
+        }
+
+        .result.show {
+            display: block;
+            animation: slideIn 0.5s ease;
+        }
+
+        @keyframes slideIn {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .cost-display {
+            font-size: 2rem;
+            font-weight: 700;
+            color: #2d3436;
+            margin-bottom: 10px;
+        }
+
+        .cost-breakdown {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+            margin-top: 20px;
+        }
+
+        .breakdown-item {
+            background: white;
+            padding: 15px;
+            border-radius: 10px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+        }
+
+        .breakdown-item h4 {
+            color: #667eea;
+            margin-bottom: 5px;
+        }
+
+        .footer {
+            background: #2d3436;
+            color: white;
+            text-align: center;
+            padding: 20px;
+            font-size: 0.9rem;
+        }
+
+        @media (max-width: 768px) {
+            .container {
+                margin: 10px;
+                border-radius: 15px;
+            }
+
+            .header h1 {
+                font-size: 2rem;
+            }
+
+            .form-container {
+                padding: 25px;
+            }
+
+            .dimension-group {
+                grid-template-columns: 1fr;
+            }
+
+            .cost-breakdown {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
 </head>
 <body>
-  <header>
-    <h1>🏗️ BrickRate</h1>
-    <p>Real-Time Construction Cost Estimator</p>
-  </header>
+    <div class="container">
+        <div class="header">
+            <h1>🏗️ BrickRate</h1>
+            <p>Real-time Construction Cost Estimator for Tier 2 & 3 Cities</p>
+        </div>
 
-  <div class="container">
-    <label for="length">Plot Length (in feet):</label>
-    <input type="number" id="length" placeholder="e.g. 30" />
+        <div class="form-container">
+            <form id="costForm">
+                <div class="form-group">
+                    <label for="city">Select Your City:</label>
+                    <select id="city" required>
+                        <option value="">Choose your city</option>
+                        <option value="bhopal">Bhopal, MP</option>
+                        <option value="jaipur">Jaipur, RJ</option>
+                        <option value="indore">Indore, MP</option>
+                        <option value="kota">Kota, RJ</option>
+                        <option value="gwalior">Gwalior, MP</option>
+                        <option value="ajmer">Ajmer, RJ</option>
+                        <option value="jabalpur">Jabalpur, MP</option>
+                        <option value="udaipur">Udaipur, RJ</option>
+                    </select>
+                </div>
 
-    <label for="width">Plot Width (in feet):</label>
-    <input type="number" id="width" placeholder="e.g. 40" />
+                <div class="form-group">
+                    <label>Plot Dimensions (in feet):</label>
+                    <div class="dimension-group">
+                        <div>
+                            <label for="length">Length:</label>
+                            <input type="number" id="length" placeholder="e.g., 40" required min="10" max="200">
+                        </div>
+                        <div>
+                            <label for="width">Width:</label>
+                            <input type="number" id="width" placeholder="e.g., 30" required min="10" max="200">
+                        </div>
+                    </div>
+                </div>
 
-    <label for="city">Select City:</label>
-    <select id="city">
-      <option value="jaipur">Jaipur</option>
-      <option value="bhopal">Bhopal</option>
-      <option value="lucknow">Lucknow</option>
-      <option value="coimbatore">Coimbatore</option>
-    </select>
+                <div class="form-group">
+                    <label for="homeType">Home Type:</label>
+                    <select id="homeType" required>
+                        <option value="">Select home type</option>
+                        <option value="1bhk">1 BHK</option>
+                        <option value="2bhk">2 BHK</option>
+                        <option value="3bhk">3 BHK</option>
+                        <option value="kothi">Kothi (Independent House)</option>
+                    </select>
+                </div>
 
-    <label for="type">House Type:</label>
-    <select id="type">
-      <option value="1bhk">1BHK</option>
-      <option value="2bhk">2BHK</option>
-      <option value="kothi">Kothi</option>
-    </select>
+                <button type="submit" class="calculate-btn">
+                    Calculate Construction Cost 💰
+                </button>
+            </form>
 
-    <button onclick="calculate()">Estimate Cost</button>
+            <div id="result" class="result">
+                <div class="cost-display" id="totalCost">₹0</div>
+                <p>Estimated Total Construction Cost</p>
+                
+                <div class="cost-breakdown">
+                    <div class="breakdown-item">
+                        <h4>Material Cost</h4>
+                        <p id="materialCost">₹0</p>
+                    </div>
+                    <div class="breakdown-item">
+                        <h4>Labor Cost</h4>
+                        <p id="laborCost">₹0</p>
+                    </div>
+                    <div class="breakdown-item">
+                        <h4>Per Sq Ft Rate</h4>
+                        <p id="perSqFtRate">₹0</p>
+                    </div>
+                    <div class="breakdown-item">
+                        <h4>Plot Area</h4>
+                        <p id="plotArea">0 sq ft</p>
+                    </div>
+                </div>
+            </div>
+        </div>
 
-    <div id="output" class="result" style="display:none;"></div>
-  </div>
+        <div class="footer">
+            <p>© 2025 BrickRate - Helping build dreams, one estimate at a time</p>
+        </div>
+    </div>
 
-  <script>
-    const baseRates = {
-      jaipur: 1200,
-      bhopal: 1000,
-      lucknow: 1100,
-      coimbatore: 950
-    };
+    <script>
+        // Construction cost rates per sq ft for different cities and home types
+        const cityRates = {
+            bhopal: { base: 1200, multiplier: 1.0 },
+            jaipur: { base: 1350, multiplier: 1.1 },
+            indore: { base: 1250, multiplier: 1.05 },
+            kota: { base: 1150, multiplier: 0.95 },
+            gwalior: { base: 1100, multiplier: 0.9 },
+            ajmer: { base: 1200, multiplier: 1.0 },
+            jabalpur: { base: 1180, multiplier: 0.98 },
+            udaipur: { base: 1400, multiplier: 1.15 }
+        };
 
-    const typeMultiplier = {
-      '1bhk': 1.0,
-      '2bhk': 1.25,
-      'kothi': 1.5
-    };
+        const homeTypeMultipliers = {
+            '1bhk': 0.8,
+            '2bhk': 1.0,
+            '3bhk': 1.2,
+            'kothi': 1.5
+        };
 
-    function calculate() {
-      const length = parseFloat(document.getElementById('length').value);
-      const width = parseFloat(document.getElementById('width').value);
-      const city = document.getElementById('city').value;
-      const type = document.getElementById('type').value;
+        document.getElementById('costForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            const city = document.getElementById('city').value;
+            const length = parseFloat(document.getElementById('length').value);
+            const width = parseFloat(document.getElementById('width').value);
+            const homeType = document.getElementById('homeType').value;
+            
+            if (!city || !length || !width || !homeType) {
+                alert('Please fill in all fields');
+                return;
+            }
+            
+            calculateCost(city, length, width, homeType);
+        });
 
-      if (!length || !width) {
-        alert("Please enter valid plot dimensions.");
-        return;
-      }
+        function calculateCost(city, length, width, homeType) {
+            const plotArea = length * width;
+            const cityRate = cityRates[city];
+            const homeMultiplier = homeTypeMultipliers[homeType];
+            
+            // Calculate base rate per sq ft
+            const baseRatePerSqFt = cityRate.base * cityRate.multiplier * homeMultiplier;
+            
+            // Calculate total cost
+            const totalCost = plotArea * baseRatePerSqFt;
+            
+            // Calculate breakdown (typical construction cost distribution)
+            const materialCost = totalCost * 0.65; // 65% materials
+            const laborCost = totalCost * 0.35;    // 35% labor
+            
+            // Display results
+            displayResults(totalCost, materialCost, laborCost, baseRatePerSqFt, plotArea);
+        }
 
-      const area = length * width;
-      const rate = baseRates[city] * typeMultiplier[type];
-      const cost = area * rate;
+        function displayResults(total, material, labor, rate, area) {
+            document.getElementById('totalCost').textContent = `₹${formatNumber(Math.round(total))}`;
+            document.getElementById('materialCost').textContent = `₹${formatNumber(Math.round(material))}`;
+            document.getElementById('laborCost').textContent = `₹${formatNumber(Math.round(labor))}`;
+            document.getElementById('perSqFtRate').textContent = `₹${Math.round(rate)}`;
+            document.getElementById('plotArea').textContent = `${area} sq ft`;
+            
+            const resultDiv = document.getElementById('result');
+            resultDiv.classList.add('show');
+            resultDiv.scrollIntoView({ behavior: 'smooth' });
+        }
 
-      const output = document.getElementById('output');
-      output.innerHTML = `
-        <h3>Estimated Cost:</h3>
-        <p><strong>Plot Area:</strong> ${area} sq.ft</p>
-        <p><strong>City Rate:</strong> ₹${baseRates[city]} per sq.ft</p>
-        <p><strong>House Type Multiplier:</strong> ×${typeMultiplier[type]}</p>
-        <p><strong>Total Estimated Cost:</strong> <span style="font-size:1.2rem;">₹${cost.toLocaleString()}</span></p>
-      `;
-      output.style.display = "block";
-    }
-  </script>
+        function formatNumber(num) {
+            return num.toLocaleString('en-IN');
+        }
+
+        // Add some interactive effects
+        document.querySelectorAll('input, select').forEach(element => {
+            element.addEventListener('focus', function() {
+                this.parentElement.style.transform = 'scale(1.02)';
+                this.parentElement.style.transition = 'transform 0.2s ease';
+            });
+            
+            element.addEventListener('blur', function() {
+                this.parentElement.style.transform = 'scale(1)';
+            });
+        });
+    </script>
 </body>
 </html>
