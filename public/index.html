@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>BrickRate - Construction Estimator</title>
+  <style>
+    body {
+      font-family: 'Segoe UI', sans-serif;
+      margin: 0;
+      padding: 0;
+      background: #f4f4f4;
+      color: #333;
+    }
+    header {
+      background: #3b82f6;
+      color: white;
+      padding: 1rem;
+      text-align: center;
+    }
+    .container {
+      max-width: 600px;
+      margin: 2rem auto;
+      background: white;
+      padding: 2rem;
+      border-radius: 8px;
+      box-shadow: 0 0 10px rgba(0,0,0,0.1);
+    }
+    label {
+      display: block;
+      margin: 1rem 0 0.5rem;
+    }
+    input, select, button {
+      width: 100%;
+      padding: 0.7rem;
+      margin-bottom: 1rem;
+      border: 1px solid #ccc;
+      border-radius: 5px;
+    }
+    button {
+      background-color: #3b82f6;
+      color: white;
+      border: none;
+      cursor: pointer;
+    }
+    button:hover {
+      background-color: #2563eb;
+    }
+    .result {
+      background: #ecfdf5;
+      border: 1px solid #34d399;
+      padding: 1rem;
+      border-radius: 5px;
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>🏗️ BrickRate</h1>
+    <p>Real-Time Construction Cost Estimator</p>
+  </header>
+
+  <div class="container">
+    <label for="length">Plot Length (in feet):</label>
+    <input type="number" id="length" placeholder="e.g. 30" />
+
+    <label for="width">Plot Width (in feet):</label>
+    <input type="number" id="width" placeholder="e.g. 40" />
+
+    <label for="city">Select City:</label>
+    <select id="city">
+      <option value="jaipur">Jaipur</option>
+      <option value="bhopal">Bhopal</option>
+      <option value="lucknow">Lucknow</option>
+      <option value="coimbatore">Coimbatore</option>
+    </select>
+
+    <label for="type">House Type:</label>
+    <select id="type">
+      <option value="1bhk">1BHK</option>
+      <option value="2bhk">2BHK</option>
+      <option value="kothi">Kothi</option>
+    </select>
+
+    <button onclick="calculate()">Estimate Cost</button>
+
+    <div id="output" class="result" style="display:none;"></div>
+  </div>
+
+  <script>
+    const baseRates = {
+      jaipur: 1200,
+      bhopal: 1000,
+      lucknow: 1100,
+      coimbatore: 950
+    };
+
+    const typeMultiplier = {
+      '1bhk': 1.0,
+      '2bhk': 1.25,
+      'kothi': 1.5
+    };
+
+    function calculate() {
+      const length = parseFloat(document.getElementById('length').value);
+      const width = parseFloat(document.getElementById('width').value);
+      const city = document.getElementById('city').value;
+      const type = document.getElementById('type').value;
+
+      if (!length || !width) {
+        alert("Please enter valid plot dimensions.");
+        return;
+      }
+
+      const area = length * width;
+      const rate = baseRates[city] * typeMultiplier[type];
+      const cost = area * rate;
+
+      const output = document.getElementById('output');
+      output.innerHTML = `
+        <h3>Estimated Cost:</h3>
+        <p><strong>Plot Area:</strong> ${area} sq.ft</p>
+        <p><strong>City Rate:</strong> ₹${baseRates[city]} per sq.ft</p>
+        <p><strong>House Type Multiplier:</strong> ×${typeMultiplier[type]}</p>
+        <p><strong>Total Estimated Cost:</strong> <span style="font-size:1.2rem;">₹${cost.toLocaleString()}</span></p>
+      `;
+      output.style.display = "block";
+    }
+  </script>
+</body>
+</html>
